@@ -14,20 +14,20 @@ import argparse
 import pyocr
 import pyocr.builders
 
-# parse args
+# Parse Args
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image", required=True, help="input image to run OCR on")
 ap.add_argument("-p", "--preprocess", type=str, default="thresh", help="type of preprocessing to be done on image before OCR")
 args = vars(ap.parse_args())
 
-# set path to image from args
+# Define Image and path from Args
 image_path = args['image']
 image = Image.open(image_path)
 image.save("temp.png", dpi=(300,300))
 image = Image.open("temp.png")
 print(image.format, image.size, image.mode)
 
-# set tools
+# Define OCR Tools
 tools = pyocr.get_available_tools()
 if len(tools) == 0:
     print("No OCR tool found")
@@ -35,27 +35,28 @@ if len(tools) == 0:
     sys.exit(1)
 
 tool = tools[0]
-print("OCR Installed; Using {}".format(tool.get_name()))
-
-# set language
 langs = tool.get_available_languages()
-print("Available languages: {}".format(langs), end="")
 lang = langs[0]
+print("OCR Installed; Using {}".format(tool.get_name()))
+print("Available languages: {}".format(langs), end="")
 print(" (using {})".format(lang), end="\n\n")
 
-# OCR text from image
+#########################
+## OCR text from image ##
+#########################
 txt = tool.image_to_string(
     image,
     lang=lang,
-    builder=pyocr.builders.TextBuilder())
+    builder=pyocr.builders.TextBuilder()
+)
 
 print("Text from image:\n{}".format(txt), end="\n\n")
 
-""" example of how to save to pdf format
-pyocr.libtesseract.image_to_pdf(
-    Image.open(image_path),
-    "test_pdf_file"
-) """
+# example of how to save to pdf format
+# pyocr.libtesseract.image_to_pdf(
+#    Image.open(image_path),
+#    "test_pdf_file"
+#)
 
 # Word Boxes
 word_boxes = tool.image_to_string(
@@ -67,7 +68,7 @@ word_boxes = tool.image_to_string(
 
 # Line and Word Boxes
 line_and_word_boxes = tool.image_to_string(
-    Image.open('example.png'), 
+    Image.open('example.png'),
     lang="eng",
     builder=pyocr.builders.LineBoxBuilder())
 

@@ -31,7 +31,7 @@ print(image.format, image.size, image.mode)
 tools = pyocr.get_available_tools()
 if len(tools) == 0:
     print("No OCR tool found")
-    print("Try installing tesseract or another OCR")
+    print("Try installing tesseract-ocr or another OCR")
     sys.exit(1)
 
 tool = tools[0]

@@ -7,6 +7,7 @@
 
 from PIL import Image
 
+import os
 import sys
 import argparse
 
@@ -21,6 +22,10 @@ args = vars(ap.parse_args())
 
 # set path to image from args
 image_path = args['image']
+image = Image.open(image_path)
+image.save("temp.png", dpi=(300,300))
+image = Image.open("temp.png")
+print(image.format, image.size, image.mode)
 
 # set tools
 tools = pyocr.get_available_tools()
@@ -38,9 +43,9 @@ print("Available languages: {}".format(langs), end="")
 lang = langs[0]
 print(" (using {})".format(lang), end="\n\n")
 
-# text from image
+# OCR text from image
 txt = tool.image_to_string(
-    Image.open(image_path),
+    image,
     lang=lang,
     builder=pyocr.builders.TextBuilder())
 
@@ -74,3 +79,6 @@ digits = tool.image_to_string(
     lang="eng",
     builder=pyocr.tesseract.DigitBuilder())
 
+
+
+os.remove("temp.png")
